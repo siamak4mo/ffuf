@@ -24,10 +24,12 @@ type Stdoutput struct {
 	fuzzkeywords   []string
 	Results        []ffuf.Result
 	CurrentResults []ffuf.Result
+	LastReqOut     int
 }
 
 func NewStdoutput(conf *ffuf.Config) *Stdoutput {
 	var outp Stdoutput
+	outp.LastReqOut = 0
 	outp.config = conf
 	outp.Results = make([]ffuf.Result, 0)
 	outp.CurrentResults = make([]ffuf.Result, 0)
@@ -157,6 +159,14 @@ func (s *Stdoutput) SetCurrentResults(results []ffuf.Result) {
 func (s *Stdoutput) Progress(status ffuf.Progress) {
 	if s.config.Quiet {
 		// No progress for quiet mode
+		return
+	}
+
+	if status.ReqCount-s.LastReqOut >= status.ReqTotal*5/100 || // 5%
+		s.LastReqOut == 0 || // at the begining
+		status.ReqCount == status.ReqTotal { // at the end
+		s.LastReqOut = status.ReqCount
+	} else {
 		return
 	}
 
