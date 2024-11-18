@@ -139,7 +139,7 @@ func ParseFlags(opts *ffuf.ConfigOptions) *ffuf.ConfigOptions {
 	flag.Var(&inputcommands, "input-cmd", "Command producing the input. --input-num is required when using this input method. Overrides -w.")
 	flag.Var(&wordlists, "w", "Wordlist file path and (optional) keyword separated by colon. eg. '/path/to/wordlist:KEYWORD'")
 	flag.Var(&encoders, "enc", "Encoders for keywords, eg. 'FUZZ:urlencode b64encode'")
-	flag.Usage = Usage
+	//	flag.Usage = Usage
 	flag.Parse()
 
 	opts.General.AutoCalibrationStrings = autocalibrationstrings
@@ -221,7 +221,7 @@ func main() {
 		opts, err = ffuf.ReadConfig(opts.General.ConfigFile)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Encoutered error(s): %s\n", err)
-			Usage()
+			//Usage()
 			fmt.Fprintf(os.Stderr, "Encoutered error(s): %s\n", err)
 			os.Exit(1)
 		}
@@ -235,7 +235,7 @@ func main() {
 	conf, err := ffuf.ConfigFromOptions(opts, ctx, cancel)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Encountered error(s): %s\n", err)
-		Usage()
+		//Usage()
 		fmt.Fprintf(os.Stderr, "Encountered error(s): %s\n", err)
 		os.Exit(1)
 	}
@@ -243,13 +243,13 @@ func main() {
 	job, err := prepareJob(conf)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Encountered error(s): %s\n", err)
-		Usage()
+		//Usage()
 		fmt.Fprintf(os.Stderr, "Encountered error(s): %s\n", err)
 		os.Exit(1)
 	}
 	if err := SetupFilters(opts, conf); err != nil {
 		fmt.Fprintf(os.Stderr, "Encountered error(s): %s\n", err)
-		Usage()
+		//Usage()
 		fmt.Fprintf(os.Stderr, "Encountered error(s): %s\n", err)
 		os.Exit(1)
 	}
