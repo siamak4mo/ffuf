@@ -43,7 +43,7 @@ func NewStdoutput(conf *ffuf.Config) *Stdoutput {
 
 func (s *Stdoutput) Banner() {
 	version := strings.ReplaceAll(ffuf.Version(), "<3", fmt.Sprintf("%s<3%s", ANSI_RED, ANSI_CLEAR))
-	fmt.Fprintf(os.Stderr, "%s\n       v%s\n%s\n\n", BANNER_HEADER, version, BANNER_SEP)
+	fmt.Fprintf(os.Stderr, "%s v%s\n%s\n", BANNER_HEADER, version, BANNER_SEP)
 	printOption([]byte("Method"), []byte(s.config.Method))
 	printOption([]byte("URL"), []byte(s.config.Url))
 
