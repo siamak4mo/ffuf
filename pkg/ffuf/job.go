@@ -1,6 +1,7 @@
 package ffuf
 
 import (
+	"bufio"
 	"fmt"
 	"log"
 	"math/rand"
@@ -105,14 +106,11 @@ func (j *Job) QueuedJobs() []QueueJob {
 	return j.queuejobs[j.queuepos-1:]
 }
 
-// Start the execution of the Job
-func (j *Job) Start() {
+func (j *Job) Start_H() {
 	if j.startTime.IsZero() {
 		j.startTime = time.Now()
 	}
-
 	basereq := BaseRequest(j.Config)
-
 	if j.Config.InputMode == "sniper" {
 		// process multiple payload locations and create a queue job for each location
 		reqs := SniperRequests(&basereq, j.Config.InputProviders[0].Template)
@@ -125,9 +123,7 @@ func (j *Job) Start() {
 		j.queuejobs = append(j.queuejobs, QueueJob{Url: j.Config.Url, depth: 0, req: BaseRequest(j.Config)})
 		j.Total = j.Input.Total()
 	}
-
 	rand.Seed(time.Now().UnixNano())
-	defer j.Stop()
 
 	j.Running = true
 	j.RunningJob = true
@@ -148,6 +144,26 @@ func (j *Job) Start() {
 	if err != nil {
 		j.Output.Error(err.Error())
 	}
+
+}
+
+// Start the execution of the Job
+func (j *Job) Start() {
+	defer j.Stop()
+	if j.Config.StdinUrls {
+		scanner := bufio.NewScanner(os.Stdin)
+		for scanner.Scan() {
+			j.Config.Url = scanner.Text()
+			if j.Config.IgnoreWordlistComments && j.Config.Url[0] == '#' {
+				continue
+			} else {
+				j.Start_H()
+			}
+		}
+	} else {
+		j.Start_H()
+	}
+
 }
 
 // Reset resets the counters and wordlist position for a job

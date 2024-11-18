@@ -28,6 +28,7 @@ type Config struct {
 	IgnoreBody                bool                  `json:"ignorebody"`
 	IgnoreWordlistComments    bool                  `json:"ignore_wordlist_comments"`
 	InputMode                 string                `json:"inputmode"`
+	StdinUrls                 bool                  `json:"stdin_url"`
 	InputNum                  int                   `json:"cmd_inputnum"`
 	InputProviders            []InputProviderConfig `json:"inputproviders"`
 	InputShell                string                `json:"inputshell"`

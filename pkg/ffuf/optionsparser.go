@@ -84,6 +84,7 @@ type InputOptions struct {
 	Request                string   `json:"request_file"`
 	RequestProto           string   `json:"request_proto"`
 	Wordlists              []string `json:"wordlists"`
+	StdinUrls              bool     `json:"stdin_urls"`
 }
 
 type OutputOptions struct {
@@ -165,6 +166,8 @@ func NewConfigOptions() *ConfigOptions {
 	c.Input.InputMode = "clusterbomb"
 	c.Input.InputNum = 100
 	c.Input.Request = ""
+	fi, _ := os.Stdin.Stat()
+	c.Input.StdinUrls = (fi.Mode() & os.ModeCharDevice) == 0
 	c.Input.RequestProto = "https"
 	c.Matcher.Mode = "or"
 	c.Matcher.Lines = ""
@@ -190,7 +193,8 @@ func ConfigFromOptions(parseOpts *ConfigOptions, ctx context.Context, cancel con
 
 	var err error
 	var err2 error
-	if len(parseOpts.HTTP.URL) == 0 && parseOpts.Input.Request == "" {
+	if len(parseOpts.HTTP.URL) == 0 && parseOpts.Input.Request == "" &&
+		!parseOpts.Input.StdinUrls { // when not reading URLs form stdin
 		errs.Add(fmt.Errorf("-u flag or -request flag is required"))
 	}
 
@@ -207,6 +211,7 @@ func ConfigFromOptions(parseOpts *ConfigOptions, ctx context.Context, cancel con
 
 	//Prepare inputproviders
 	conf.InputMode = parseOpts.Input.InputMode
+	conf.StdinUrls = parseOpts.Input.StdinUrls
 
 	validmode := false
 	for _, mode := range []string{"clusterbomb", "pitchfork", "sniper"} {
