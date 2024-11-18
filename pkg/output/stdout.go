@@ -179,13 +179,22 @@ func (s *Stdoutput) Progress(status ffuf.Progress) {
 		reqRate = 0
 	}
 
-	hours := dur / time.Hour
-	dur -= hours * time.Hour
-	mins := dur / time.Minute
-	dur -= mins * time.Minute
-	secs := dur / time.Second
+	//hours := dur / time.Hour
+	//dur -= hours * time.Hour
+	//mins := dur / time.Minute
+	//dur -= mins * time.Minute
+	//secs := dur / time.Second
 
-	fmt.Fprintf(os.Stderr, "%s:: Progress: [%d/%d] :: Job [%d/%d] :: %d req/sec :: Duration: [%d:%02d:%02d] :: Errors: %d ::", TERMINAL_CLEAR_LINE, status.ReqCount, status.ReqTotal, status.QueuePos, status.QueueTotal, reqRate, hours, mins, secs, status.ErrorCount)
+	//fmt.Fprintf(os.Stderr, " %s:: Progress: [%d/%d] :: Job [%d/%d] :: %d req/sec :: Duration: [%d:%02d:%02d] :: Errors: %d ::", TERMINAL_CLEAR_LINE, status.ReqCount, status.ReqTotal, status.QueuePos, status.QueueTotal, reqRate, hours, mins, secs, status.ErrorCount)
+
+	fmt.Fprintf(
+		os.Stderr, " %s:: Progress: %d%% [%d/%d] :: %d req/sec ::  Errors: %d ::",
+		TERMINAL_CLEAR_LINE,
+		status.ReqCount*100/status.ReqTotal,
+		status.ReqCount, status.ReqTotal,
+		reqRate,
+		status.ErrorCount,
+	)
 }
 
 func (s *Stdoutput) Info(infostring string) {
