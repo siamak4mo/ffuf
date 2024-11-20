@@ -154,7 +154,8 @@ func (j *Job) Start() {
 		scanner := bufio.NewScanner(os.Stdin)
 		for scanner.Scan() {
 			j.Config.Url = scanner.Text()
-			if j.Config.IgnoreWordlistComments && j.Config.Url[0] == '#' {
+			if len(j.Config.Url) == 0 ||
+				j.Config.IgnoreWordlistComments && j.Config.Url[0] == '#' {
 				continue
 			} else {
 				j.Start_H()
