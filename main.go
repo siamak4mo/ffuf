@@ -254,14 +254,12 @@ func main() {
 		os.Exit(1)
 	}
 
-	if !conf.Noninteractive {
-		go func() {
-			err := interactive.Handle(job)
-			if err != nil {
-				log.Printf("Error while trying to initialize interactive session: %s", err)
-			}
-		}()
-	}
+	go func() {
+		err := interactive.Handle(job)
+		if err != nil {
+			log.Printf("Error while trying to initialize interactive session: %s", err)
+		}
+	}()
 
 	// Job handles waiting for goroutines to complete itself
 	job.Start()
