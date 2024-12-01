@@ -19,3 +19,7 @@ func termHandle() (*os.File, error) {
 	}
 	return tty, nil
 }
+
+func resetLine() {
+	// TODO: Not implemented yet
+}

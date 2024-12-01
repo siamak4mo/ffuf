@@ -24,8 +24,14 @@ func Handle(job *ffuf.Job) error {
 	defer tty.Close()
 	inreader := bufio.NewScanner(tty)
 	inreader.Split(bufio.ScanLines)
+
 	for inreader.Scan() {
-		i.handleInput(inreader.Bytes())
+		if job.Config.Noninteractive {
+			resetLine()
+			job.UpdateProgressImmed()
+		} else {
+			i.handleInput(inreader.Bytes())
+		}
 	}
 	return nil
 }
