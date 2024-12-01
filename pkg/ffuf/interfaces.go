@@ -66,6 +66,7 @@ type OutputProvider interface {
 	Banner()
 	Finalize() error
 	Progress(status Progress)
+	ProgressImmed(status Progress)
 	Info(infostring string)
 	Error(errstring string)
 	Raw(output string)

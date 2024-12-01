@@ -347,6 +347,19 @@ func (j *Job) updateProgress() {
 	j.Output.Progress(prog)
 }
 
+func (j *Job) UpdateProgressImmed() {
+	prog := Progress{
+		StartedAt:  j.startTimeJob,
+		ReqCount:   j.Counter,
+		ReqTotal:   j.Input.Total(),
+		ReqSec:     j.Rate.CurrentRate(),
+		QueuePos:   j.queuepos,
+		QueueTotal: len(j.queuejobs),
+		ErrorCount: j.ErrorCounter,
+	}
+	j.Output.ProgressImmed(prog)
+}
+
 func (j *Job) isMatch(resp Response) bool {
 	matched := false
 	var matchers map[string]FilterProvider
