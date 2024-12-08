@@ -9,4 +9,5 @@ const (
 	ANSI_GREEN          = "\x1b[32m"
 	ANSI_BLUE           = "\x1b[34m"
 	ANSI_YELLOW         = "\x1b[33m"
+	ANSI_RESET          = "\033[0m"
 )
