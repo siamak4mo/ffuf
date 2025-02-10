@@ -6,6 +6,7 @@ import (
 	"math/rand"
 	"os"
 	"os/signal"
+	"strings"
 	"sync"
 	"syscall"
 	"time"
@@ -113,6 +114,14 @@ func (j *Job) Start() {
 
 	basereq := BaseRequest(j.Config)
 
+	if j.Config.RequestFile == "" &&
+		!strings.Contains(j.Config.Url, "FUZZ") {
+		if j.Config.Url[len(j.Config.Url)-1] == '/' {
+			j.Config.Url += "FUZZ"
+		} else {
+			j.Config.Url += "/FUZZ"
+		}
+	}
 	if j.Config.InputMode == "sniper" {
 		// process multiple payload locations and create a queue job for each location
 		reqs := SniperRequests(&basereq, j.Config.InputProviders[0].Template)
