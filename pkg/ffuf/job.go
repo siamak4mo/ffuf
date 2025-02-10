@@ -6,6 +6,7 @@ import (
 	"math/rand"
 	"os"
 	"os/signal"
+	"strings"
 	"sync"
 	"syscall"
 	"time"
@@ -105,6 +106,19 @@ func (j *Job) QueuedJobs() []QueueJob {
 	return j.queuejobs[j.queuepos-1:]
 }
 
+// Check is FUZZ keyword prodived or not
+func (c Config) HasFUZZ() bool {
+	if strings.Contains(c.Url, "FUZZ") {
+		return true
+	}
+	for k, v := range c.Headers {
+		if strings.Contains(k, "FUZZ") || strings.Contains(v, "FUZZ") {
+			return true
+		}
+	}
+	return false
+}
+
 // Start the execution of the Job
 func (j *Job) Start() {
 	if j.startTime.IsZero() {
@@ -113,6 +127,13 @@ func (j *Job) Start() {
 
 	basereq := BaseRequest(j.Config)
 
+	if j.Config.RequestFile == "" && !j.Config.HasFUZZ() {
+		if j.Config.Url[len(j.Config.Url)-1] == '/' {
+			j.Config.Url += "FUZZ"
+		} else {
+			j.Config.Url += "/FUZZ"
+		}
+	}
 	if j.Config.InputMode == "sniper" {
 		// process multiple payload locations and create a queue job for each location
 		reqs := SniperRequests(&basereq, j.Config.InputProviders[0].Template)
