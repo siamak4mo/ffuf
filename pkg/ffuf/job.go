@@ -107,14 +107,26 @@ func (j *Job) QueuedJobs() []QueueJob {
 	return j.queuejobs[j.queuepos-1:]
 }
 
+// Check is FUZZ keyword prodived or not
+func (c Config) HasFUZZ() bool {
+	if strings.Contains(c.Url, "FUZZ") {
+		return true
+	}
+	for k, v := range c.Headers {
+		if strings.Contains(k, "FUZZ") || strings.Contains(v, "FUZZ") {
+			return true
+		}
+	}
+	return false
+}
+
 func (j *Job) Start_H() {
 	if j.startTime.IsZero() {
 		j.startTime = time.Now()
 	}
 	basereq := BaseRequest(j.Config)
 
-	if j.Config.RequestFile == "" &&
-		!strings.Contains(j.Config.Url, "FUZZ") {
+	if j.Config.RequestFile == "" && !j.Config.HasFUZZ() {
 		if j.Config.Url[len(j.Config.Url)-1] == '/' {
 			j.Config.Url += "FUZZ"
 		} else {
