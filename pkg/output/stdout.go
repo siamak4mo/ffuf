@@ -187,7 +187,7 @@ func (s *Stdoutput) Progress(status ffuf.Progress) {
 		return
 	}
 
-	if status.ReqCount-s.LastReqOut >= status.ReqTotal*5/100 || // 5%
+	if status.ReqCount-s.LastReqOut >= status.ReqTotal/100 || // 1%
 		s.LastReqOut == 0 || // at the begining
 		status.ReqCount == status.ReqTotal { // at the end
 		s.LastReqOut = status.ReqCount
